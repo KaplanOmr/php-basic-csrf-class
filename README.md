@@ -26,7 +26,7 @@ $csrf->checkToken($_REQUEST['_csrf']); // Bu fonksiyon sizlere boollean değer d
 
 $csrf->checkRequest($_REQUEST); // Bu fonksiyon sizlere boollean değer döndürür.
 ```
-Örnek kullanım;
+Örnek kullanım:
 ```php
 <h1>CSRF Example</h1>
 <hr>
