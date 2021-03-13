@@ -8,11 +8,11 @@ Class kullanımı:
 ```php
 $csrf = new CSRF();
 ```
-Şeklinde tanımlanır. CSRF Classı isteğe başlı olarak 3 farklı parametre almaktır. Bunlar sırası ile:
+Şeklinde tanımlanır. CSRF Classı isteğe bağlı olarak 3 farklı parametre almaktır. Bunlar sırası ile:
 ```php
-string $inputName // Özel İnput Name
-bool $expiredToken // Token Zaman Aşımı
-int $expriredTokenTime // Token Zaman Aşım Süresi
+string $inputName // Özel İnput Name - Ön Tanım: "_csrf"
+bool $expiredToken // Token Zaman Aşımı -  Ön Tanım: false
+int $expriredTokenTime // Token Zaman Aşım Süresi - Ön Tanım: 3000
 ```
 Fromdan gelen CSRF token'ı kontrol etmek için 2 farklı yöntem vardır:
 ```php
