@@ -1,10 +1,25 @@
 <?php
+
+/**
+ * @author KaplanOmr
+ * @github https://github.com/KaplanOmr
+ * @create date 2021-03-13 23:43:48
+ * @modify date 2021-03-13 23:43:48
+ * @desc Basic PHP CSRF Class
+ */
+
 class CSRF
 {
     private $csrfList;
     protected $inputName;
 
-    public function __construct(string $inputName = '_csrf', bool $expiredToken = false, int $exprideTokenTime = 3000)
+
+    /**
+     * @param string $inputName Custom Input Name
+     * @param bool $expiredToken Tokens Time Out
+     * @param int $expriredTokenTime Expired Time
+     */
+    public function __construct(string $inputName = '_csrf', bool $expiredToken = true, int $expriredTokenTime = 3000)
     {
 
         if (session_status() === PHP_SESSION_NONE) {
@@ -19,15 +34,16 @@ class CSRF
 
         if ($expiredToken) {
 
-            $expTime = time() - $exprideTokenTime;
+            $expTime = time() - $expriredTokenTime;
 
             $tmpArr = $_SESSION['csrf'];
-
-            foreach ($tmpArr as $index => $csrf) {
-                if ($csrf['created'] > $expTime) {
-                    unset($_SESSION['csrf'][$index]);
+            if(count($tmpArr)){
+                foreach ($tmpArr as $index => $csrf) {
+                    if ($csrf['created'] < $expTime) {
+                        unset($_SESSION['csrf'][$index]);
+                    }
                 }
-            }
+            }            
         }
 
 
@@ -35,6 +51,11 @@ class CSRF
         $this->inputName = $inputName;
     }
 
+
+    /**
+     * Token Creator
+     * @return string
+     */
     public function createToken(): string
     {
         $tokenData = rand() . "-" . time();
@@ -42,12 +63,17 @@ class CSRF
 
         array_push($_SESSION['csrf'], [
             'token' => $token,
-            'time' => time()
+            'created' => time()
         ]);
 
         return $token;
     }
 
+
+    /**
+     * Form Input Creator
+     * @return string
+     */
     public function createInput(): string
     {
         $token = $this->createToken();
@@ -55,6 +81,11 @@ class CSRF
         return $returnStr;
     }
 
+    /**
+     * Token String Checker
+     * @param string $token Token String
+     * @return bool
+     */
     public function checkToken(string $token): bool
     {
         if ($this->checkCsrfList()) {
@@ -68,6 +99,11 @@ class CSRF
         return false;
     }
 
+    /**
+     * Request Checker
+     * @param array $request Request Array
+     * @return bool
+     */
     public function checkRequest(array $request): bool
     {
         if ($this->checkCsrfList()) {
@@ -81,6 +117,10 @@ class CSRF
         return false;
     }
 
+    /**
+     * CSRF List Checker
+     * @return bool
+     */
     private function checkCsrfList(): bool
     {
         if (count($this->csrfList)) {
